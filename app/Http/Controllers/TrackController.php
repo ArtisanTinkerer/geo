@@ -34,13 +34,23 @@ class TrackController extends Controller
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'gpx' => 'required|file'
+        ]);
 
-        //gpx file uploaded
-     //   $request->file('gpx')->store('tracks');
-
-        $fileContent = file_get_contents($request->file('gpx'));
+        $xml=simplexml_load_file($request->file('gpx'));
 
         //look at points and save to db
+        echo $xml->trk->name;
+
+        foreach( $xml->trk->trkseg->{'trkpt'} as $trkpt ) {
+
+            $trkptlat = $trkpt->attributes()->lat;
+            $trkptlon = $trkpt->attributes()->lon;
+        }
+
+
+
 
 
 
