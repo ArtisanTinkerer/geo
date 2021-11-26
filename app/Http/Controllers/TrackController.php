@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Point;
+use App\Models\Track;
 use Illuminate\Http\Request;
 
 class TrackController extends Controller
@@ -41,14 +43,32 @@ class TrackController extends Controller
         $xml=simplexml_load_file($request->file('gpx'));
 
         //look at points and save to db
-        echo $xml->trk->name;
+        $track = new Track();
+        $track->name = $xml->trk->name;
+        $track->save();
 
-        foreach( $xml->trk->trkseg->{'trkpt'} as $trkpt ) {
+        foreach( $xml->trk->trkseg->{'trkpt'} as $trackPoint ) {
 
-            $trkptlat = $trkpt->attributes()->lat;
-            $trkptlon = $trkpt->attributes()->lon;
+            $point = new Point();
+
+            $lat = $trackPoint->attributes()->lat;
+            $lon = $trackPoint->attributes()->lon;
+
+            $point->position = \DB::raw("ST_GeomFromText('POINT($lat $lon)',4326)");
+
+            $point->elevation = 0;
+
+            //todo relationship
+            $point->track_id = $track->id;
+            $point->save();
+
+
+            //SQLSTATE[42000]: Syntax error or access violation: 1305 FUNCTION example_app.GeomFromText does not exist (SQL: insert into `points` (`position`, `elevation`, `updated_at`, `created_at`) values (GeomFromText('POINT(53.1051790 -2.1653080)'), 0, 2021-11-26 17:57:28, 2021-11-26 17:57:28))
+
         }
 
+
+        //todo retrieve and back to lat lon?
 
 
 
