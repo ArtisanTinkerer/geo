@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Point extends Model
 {
     use HasFactory;
+
+    public function track()
+    {
+        return $this->belongsTo(Track::class);
+    }
 }

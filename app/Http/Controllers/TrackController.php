@@ -63,16 +63,10 @@ class TrackController extends Controller
             $point->save();
 
 
-            //SQLSTATE[42000]: Syntax error or access violation: 1305 FUNCTION example_app.GeomFromText does not exist (SQL: insert into `points` (`position`, `elevation`, `updated_at`, `created_at`) values (GeomFromText('POINT(53.1051790 -2.1653080)'), 0, 2021-11-26 17:57:28, 2021-11-26 17:57:28))
-
         }
 
 
-        //todo retrieve and back to lat lon?
-
-
-
-
+        //go back to the show now
 
     }
 
@@ -82,9 +76,13 @@ class TrackController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Track $track)
     {
-        //
+        //todo retrieve and back to lat lon?
+
+        return view('tracks.show')->with('track',$track->load('points'));
+
+
     }
 
     /**
