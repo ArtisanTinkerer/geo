@@ -29,9 +29,9 @@
                 </thead>
                 <tbody>
 
-                {{$track->points[0]}}
 
-                {{--@foreach ($track->points as $point)
+
+                @foreach ($track->points as $point)
                     <tr>
                         <td>{{$point->position}}</td>
                         <td>{{$point->position}}</td>
@@ -40,7 +40,7 @@
 
                     </tr>
 
-                @endforeach--}}
+                @endforeach
 
                 </tbody>
             </table>

@@ -78,11 +78,7 @@ class TrackController extends Controller
      */
     public function show(Track $track)
     {
-        //todo retrieve and back to lat lon?
-
         return view('tracks.show')->with('track',$track->load('points'));
-
-
     }
 
     /**

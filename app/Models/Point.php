@@ -13,4 +13,26 @@ class Point extends Model
     {
         return $this->belongsTo(Track::class);
     }
+
+    /**
+     * https://stackoverflow.com/questions/37467050/convert-mysqls-point-to-text-in-php
+     *
+     * @param $value
+     * @return string
+     */
+    public function getlatitudeAttribute()
+    {
+        return unpack('x4/clat/Llat/dlat/dlon', $this->position)['lat'];
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getlongitudeAttribute()
+    {
+        return unpack('x4/clat/Llat/dlat/dlon', $this->position)['lon'];
+    }
+
+
 }
