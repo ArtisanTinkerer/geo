@@ -78,7 +78,11 @@ class TrackController extends Controller
      */
     public function show(Track $track)
     {
-        return view('tracks.show')->with('track',$track->load('points'));
+        $track = $track->load('points');
+        $token = env('MAPBOX_TOKEN');
+
+        return view('tracks.show',compact('track', 'token'));
+
     }
 
     /**

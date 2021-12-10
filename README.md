@@ -19,6 +19,11 @@
 * saving lines
 * saving polygons
 
+### plotting
+* Google Maps is easier and more useful globally
+
+* on OS?
+
 
 # Done
 
