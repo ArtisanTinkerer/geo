@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Point;
 use App\Models\Track;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TrackController extends Controller
 {
@@ -45,29 +46,33 @@ class TrackController extends Controller
         //look at points and save to db
         $track = new Track();
         $track->name = $xml->trk->name;
+
+        $points = "ST_GeomFromText('LINESTRING(";
+        foreach( $xml->trk->trkseg->{'trkpt'} as $trackPoint ) {
+            $points .= "{$trackPoint->attributes()->lon}    {$trackPoint->attributes()->lat} ,";
+        }
+        $points = rtrim($points,',');
+        $points .= ")')";
+
+
+        $track->line = \DB::raw($points);
         $track->save();
 
-        foreach( $xml->trk->trkseg->{'trkpt'} as $trackPoint ) {
+        //can I save this as a linestring instead of points?
+        //ST_GeomFromText('LINESTRING(0 0, 1 1)')
 
+
+        /*foreach( $xml->trk->trkseg->{'trkpt'} as $trackPoint ) {
             $point = new Point();
-
             $lat = $trackPoint->attributes()->lat;
             $lon = $trackPoint->attributes()->lon;
-
             $point->position = \DB::raw("ST_GeomFromText('POINT($lat $lon)',4326)");
-
             $point->elevation = 0;
-
-            //todo relationship
             $point->track_id = $track->id;
             $point->save();
+        }*/
 
-
-        }
-
-
-        //go back to the show now
-
+        return route('tracks.show',$track);
     }
 
     /**
@@ -78,10 +83,17 @@ class TrackController extends Controller
      */
     public function show(Track $track)
     {
-        $track = $track->load('points');
         $token = env('MAPBOX_TOKEN');
 
-        return view('tracks.show',compact('track', 'token'));
+
+        $theline =  DB::table('tracks')
+            ->select(DB::raw('ST_AsGeoJSON(line) as json'))
+            ->where('id', '=', $track->id)
+            ->first()->json;
+
+        $zoomTo = json_encode([json_decode($theline)->coordinates[0][1], json_decode($theline)->coordinates[0][0]]);
+
+        return view('tracks.show',compact('track', 'token','theline','zoomTo'));
 
     }
 

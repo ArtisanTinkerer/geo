@@ -9,7 +9,9 @@
 
 
 # ToDo
-
+* index page
+* frontend!
+* pull straight from Strava?
 
 # Doing
 
